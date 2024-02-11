@@ -2,6 +2,9 @@ package com.example.newslettercore.application.rest;
 
 import com.example.newslettercore.domain.exception.CantLoginException;
 import com.example.newslettercore.domain.exception.NewsletterCoreObjectNotFoundException;
+import com.example.newslettercore.domain.exception.UserEmailInvalidException;
+import com.example.newslettercore.domain.exception.UserNameInvalidException;
+import com.example.newslettercore.domain.exception.UserPasswordInvalidException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,5 +28,12 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 
         String bodyOfResponse = e.getMessage();
         return handleExceptionInternal(e, bodyOfResponse, new HttpHeaders(), HttpStatus.UNAUTHORIZED, request);
+    }
+
+    @ExceptionHandler(value = {UserNameInvalidException.class, UserPasswordInvalidException.class, UserEmailInvalidException.class})
+    protected ResponseEntity<Object> handleBadRequest(RuntimeException e, WebRequest request) {
+
+        String bodyOfResponse = e.getMessage();
+        return handleExceptionInternal(e, bodyOfResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 }

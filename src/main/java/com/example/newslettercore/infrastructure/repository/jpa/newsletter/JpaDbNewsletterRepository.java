@@ -1,8 +1,8 @@
 package com.example.newslettercore.infrastructure.repository.jpa.newsletter;
 
-import com.example.newslettercore.domain.newsletter.model.NewsletterCreteDTO;
-import com.example.newslettercore.domain.newsletter.model.NewsletterDTO;
-import com.example.newslettercore.domain.newsletter.model.NewsletterQueryParams;
+import com.example.newslettercore.application.rest.newsletter.model.NewsletterQueryParams;
+import com.example.newslettercore.domain.newsletter.model.Newsletter;
+import com.example.newslettercore.domain.newsletter.model.Template;
 import com.example.newslettercore.domain.newsletter.repository.NewsletterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,52 +14,68 @@ import java.util.Optional;
 public class JpaDbNewsletterRepository implements NewsletterRepository {
 
     private final SpringDataJpaNewsletterRepository newsletterRepository;
+    private final SpringDataJpaTemplateRepository templateRepository;
 
     @Autowired
-    public JpaDbNewsletterRepository(SpringDataJpaNewsletterRepository newsletterRepository) {
+    public JpaDbNewsletterRepository(SpringDataJpaNewsletterRepository newsletterRepository, SpringDataJpaTemplateRepository templateRepository) {
 
         this.newsletterRepository = newsletterRepository;
+        this.templateRepository = templateRepository;
     }
 
     @Override
-    public NewsletterDTO save(NewsletterCreteDTO newsletterCreteDTO) {
+    public Newsletter save(Newsletter newsletter) {
 
-        NewsletterEntity newsletterEntity = NewsletterMapper.getMapper.mapToNewsletterEntity(newsletterCreteDTO);
-        NewsletterEntity savedNewsletter = newsletterRepository.save(newsletterEntity);
-        return NewsletterMapper.getMapper.mapToNewsletterDTO(savedNewsletter);
+        NewsletterEntity newsletterEntity = JpaDbNewsletterMapper.getMapper.mapToNewsletterEntity(newsletter);
+        NewsletterEntity savedNewsletter = newsletterRepository.saveAndFlush(newsletterEntity);
+        return JpaDbNewsletterMapper.getMapper.mapToNewsletter(savedNewsletter);
     }
 
     @Override
-    public NewsletterDTO save(NewsletterDTO newsletterDTO) {
-
-        NewsletterEntity newsletterEntity = NewsletterMapper.getMapper.mapToNewsletterEntity(newsletterDTO);
-        NewsletterEntity savedNewsletter = newsletterRepository.save(newsletterEntity);
-        return NewsletterMapper.getMapper.mapToNewsletterDTO(savedNewsletter);
-    }
-
-    @Override
-    public Optional<NewsletterDTO> findById(String newsletterId) {
+    public Optional<Newsletter> findNewsletterById(String newsletterId) {
 
         Optional<NewsletterEntity> newsletterOptional = newsletterRepository.findById(newsletterId);
 
         if (newsletterOptional.isPresent()) {
-            NewsletterDTO newsletterDTO = NewsletterMapper.getMapper.mapToNewsletterDTO(newsletterOptional.get());
-            return Optional.of(newsletterDTO);
+            Newsletter newsletter = JpaDbNewsletterMapper.getMapper.mapToNewsletter(newsletterOptional.get());
+            return Optional.of(newsletter);
         } else {
             return Optional.empty();
         }
     }
 
     @Override
-    public Collection<NewsletterDTO> findByParams(NewsletterQueryParams newsletterQueryParams) {
+    public Collection<Newsletter> findNewslettersByParams(NewsletterQueryParams newsletterQueryParams) {
 
-        Collection<NewsletterEntity> newsletterEntities = newsletterRepository.findByParams(newsletterQueryParams.getTag());
-        return NewsletterMapper.getMapper.mapToNewsletterDTO(newsletterEntities);
+        Collection<NewsletterEntity> newsletterEntities = newsletterRepository.findNewslettersByParams(newsletterQueryParams.getTag());
+        return JpaDbNewsletterMapper.getMapper.mapToNewsletters(newsletterEntities);
     }
 
     @Override
-    public void deleteById(String newsletterId) {
+    public void deleteNewsletterById(String newsletterId) {
 
         newsletterRepository.deleteById(newsletterId);
+    }
+
+    @Override
+    public Optional<Template> findTemplateById(String templateId) {
+
+        Optional<TemplateEntity> templateEntityOptional = templateRepository.findById(templateId);
+
+        if (templateEntityOptional.isPresent()) {
+
+            Template template = JpaDbNewsletterMapper.getMapper.mapToTemplate(templateEntityOptional.get());
+            Newsletter newsletter = JpaDbNewsletterMapper.getMapper.mapToNewsletter(templateEntityOptional.get().getNewsletter());
+            template.setNewsletter(newsletter);
+            return Optional.of(template);
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public void deleteTemplateById(String templateId) {
+
+        templateRepository.deleteById(templateId);
     }
 }

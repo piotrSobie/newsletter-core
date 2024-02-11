@@ -1,21 +1,23 @@
 package com.example.newslettercore.domain.newsletter.repository;
 
-import com.example.newslettercore.domain.newsletter.model.NewsletterCreteDTO;
-import com.example.newslettercore.domain.newsletter.model.NewsletterDTO;
-import com.example.newslettercore.domain.newsletter.model.NewsletterQueryParams;
+import com.example.newslettercore.application.rest.newsletter.model.NewsletterQueryParams;
+import com.example.newslettercore.domain.newsletter.model.Newsletter;
+import com.example.newslettercore.domain.newsletter.model.Template;
 
 import java.util.Collection;
 import java.util.Optional;
 
 public interface NewsletterRepository {
 
-    NewsletterDTO save(NewsletterCreteDTO newsletterCreteDTO);
+    Newsletter save(Newsletter newsletter);
 
-    NewsletterDTO save(NewsletterDTO newsletterDTO);
+    Optional<Newsletter> findNewsletterById(String newsletterId);
 
-    Optional<NewsletterDTO> findById(String newsletterId);
+    Collection<Newsletter> findNewslettersByParams(NewsletterQueryParams newsletterQueryParams);
 
-    Collection<NewsletterDTO> findByParams(NewsletterQueryParams newsletterQueryParams);
+    void deleteNewsletterById(String newsletterId);
 
-    void deleteById(String newsletterId);
+    Optional<Template> findTemplateById(String templateId);
+
+    void deleteTemplateById(String templateId);
 }
