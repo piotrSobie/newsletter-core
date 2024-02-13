@@ -32,9 +32,9 @@ public class TemplateEntity {
     private NewsletterEntity newsletter;
 
     @ElementCollection
-    @CollectionTable(name = "template_canal_type", joinColumns = @JoinColumn(name = "template_id"))
+    @CollectionTable(name = "template_channel_type", joinColumns = @JoinColumn(name = "template_id"))
     @Column(name = "name")
-    private List<String> canals;
+    private List<String> channels;
 
     @Column(name = "text")
     private String text;

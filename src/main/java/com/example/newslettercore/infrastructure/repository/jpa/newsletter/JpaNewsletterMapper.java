@@ -16,9 +16,9 @@ import java.util.stream.Collectors;
 import static java.util.stream.Collectors.toList;
 
 @Mapper
-public interface JpaDbNewsletterMapper {
+public interface JpaNewsletterMapper {
 
-    JpaDbNewsletterMapper getMapper = Mappers.getMapper(JpaDbNewsletterMapper.class);
+    JpaNewsletterMapper getMapper = Mappers.getMapper(JpaNewsletterMapper.class);
 
     NewsletterEntity mapToNewsletterEntity(Newsletter newsletter);
 
@@ -40,9 +40,9 @@ public interface JpaDbNewsletterMapper {
         TemplateEntity templateEntity = new TemplateEntity();
 
         templateEntity.setId( template.getId() );
-        List<String> list = template.getCanals();
+        List<String> list = template.getChannels();
         if ( list != null ) {
-            templateEntity.setCanals( new ArrayList<>( list ) );
+            templateEntity.setChannels( new ArrayList<>( list ) );
         }
         templateEntity.setText( template.getText() );
 
@@ -68,10 +68,10 @@ public interface JpaDbNewsletterMapper {
 
     default Template mapToTemplate(TemplateEntity templateEntity) {
 
-        return new Template(templateEntity.getId(), templateEntity.getCanals(), templateEntity.getText(), null);
+        return new Template(templateEntity.getId(), templateEntity.getChannels(), templateEntity.getText(), null);
     }
 
-    default List<Template> mapToTemplates(List<TemplateEntity> templateEntities) {
+    default List<Template> mapToTemplates(Collection<TemplateEntity> templateEntities) {
 
         if (CollectionUtils.isEmpty(templateEntities)) {
             return new ArrayList<>();

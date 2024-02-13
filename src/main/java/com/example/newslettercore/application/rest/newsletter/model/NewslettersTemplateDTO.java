@@ -9,7 +9,7 @@ public class NewslettersTemplateDTO {
 
     private String id;
 
-    private List<String> canals;
+    private List<String> channels;
 
     private String text;
 }

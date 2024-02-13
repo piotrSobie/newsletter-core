@@ -9,8 +9,6 @@ import com.example.newslettercore.domain.user.value.UserNameValue;
 import com.example.newslettercore.domain.user.value.UserPasswordValue;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 public class UserService {
 
@@ -29,24 +27,16 @@ public class UserService {
 
     public User updateUser(String userId, UserNameValue name, UserPasswordValue password, UserEmailValue email) {
 
-        Optional<User> userOptional = userRepository.findById(userId);
-        if (userOptional.isEmpty()) {
-            throw new NewsletterCoreObjectNotFoundException(User.class.getSimpleName(), userId);
-        }
-
-        User foundUser = userOptional.get();
+        User foundUser = userRepository.findById(userId)
+                .orElseThrow(() -> new NewsletterCoreObjectNotFoundException(User.class.getSimpleName(), userId));
         User updatedUser = foundUser.updateUser(name.getValue(), password.getValue(), email.getValue());
         return userRepository.save(updatedUser);
     }
 
     public User loginUser(UserEmailValue email, UserPasswordValue givenPassword) {
 
-        Optional<User> userOptional = userRepository.findByEmail(email.getValue());
-        if (userOptional.isEmpty()) {
-            throw new CantLoginException();
-        }
-
-        User foundUser = userOptional.get();
+        User foundUser = userRepository.findByEmail(email.getValue())
+                .orElseThrow(CantLoginException::new);
         return foundUser.loginUser(givenPassword.getValue());
     }
 }

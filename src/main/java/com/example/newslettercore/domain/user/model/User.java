@@ -18,8 +18,6 @@ public class User {
 
     private String email;
 
-    private String token;
-
     public User(String id, String name, String password, String email) {
 
         this(name, password, email);
@@ -68,19 +66,12 @@ public class User {
         }
     }
 
-    public void generateToken() {
-
-        this.token = "TODO";
-    }
-
     public User loginUser(String givenPassword) {
 
         boolean incorrectPassword = !password.equals(givenPassword);
         if (incorrectPassword) {
             throw new CantLoginException();
         }
-
-        generateToken();
 
         return this;
     }

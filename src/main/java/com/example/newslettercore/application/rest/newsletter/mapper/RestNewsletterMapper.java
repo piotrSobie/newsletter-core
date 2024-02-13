@@ -1,6 +1,6 @@
 package com.example.newslettercore.application.rest.newsletter.mapper;
 
-import com.example.newslettercore.application.rest.newsletter.model.NewsletterDTO;
+import com.example.newslettercore.application.rest.newsletter.model.NewsletterResponse;
 import com.example.newslettercore.domain.newsletter.model.Newsletter;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
@@ -12,7 +12,7 @@ public interface RestNewsletterMapper {
 
     RestNewsletterMapper getMapper = Mappers.getMapper(RestNewsletterMapper.class);
 
-    NewsletterDTO mapToNewsletterDTO(Newsletter newsletter);
+    NewsletterResponse mapToNewsletterDTO(Newsletter newsletter);
 
-    Collection<NewsletterDTO> mapToNewsletterDTO(Collection<Newsletter> newsletters);
+    Collection<NewsletterResponse> mapToNewsletterDTO(Collection<Newsletter> newsletters);
 }

@@ -1,9 +1,10 @@
 package com.example.newslettercore.application.rest.user.api;
 
+import com.example.newslettercore.application.rest.auth.AuthUtil;
 import com.example.newslettercore.application.rest.user.mapper.RestUserMapper;
 import com.example.newslettercore.application.rest.user.model.UserCreateDTO;
-import com.example.newslettercore.application.rest.user.model.UserDTO;
 import com.example.newslettercore.application.rest.user.model.UserLoginDataDTO;
+import com.example.newslettercore.application.rest.user.model.UserResponse;
 import com.example.newslettercore.application.rest.user.model.UserUpdateDTO;
 import com.example.newslettercore.domain.user.model.User;
 import com.example.newslettercore.domain.user.service.UserService;
@@ -41,28 +42,29 @@ public class UserController {
     }
 
     @PostMapping(path = USER_ENDPOINT + "/register")
-    public ResponseEntity<UserDTO> createUser(@RequestBody @Valid UserCreateDTO userCreateDTO) {
+    public ResponseEntity<UserResponse> createUser(@RequestBody @Valid UserCreateDTO userCreateDTO) {
 
         User createdUser = userService.createUser(new UserNameValue(userCreateDTO.getName()), new UserPasswordValue(userCreateDTO.getPassword()),
                 new UserEmailValue(userCreateDTO.getEmail()));
-        UserDTO responseUserDTO = RestUserMapper.getMapper.mapToUserDTO(createdUser);
-        return new ResponseEntity<>(responseUserDTO, HttpStatus.CREATED);
+        UserResponse responseUser = RestUserMapper.getMapper.mapToUserDTO(createdUser);
+        return new ResponseEntity<>(responseUser, HttpStatus.CREATED);
     }
 
     @PostMapping(path = USER_ENDPOINT + "/login")
-    public ResponseEntity<UserDTO> loginUser(@RequestBody UserLoginDataDTO userLoginDataDTO) {
+    public ResponseEntity<UserResponse> loginUser(@RequestBody UserLoginDataDTO userLoginDataDTO) {
 
         User loggedUser = userService.loginUser(new UserEmailValue(userLoginDataDTO.getEmail()), new UserPasswordValue(userLoginDataDTO.getPassword()));
-        UserDTO responseUserDTO = RestUserMapper.getMapper.mapToUserDTO(loggedUser);
-        return new ResponseEntity<>(responseUserDTO, HttpStatus.OK);
+        UserResponse responseUser = RestUserMapper.getMapper.mapToUserDTO(loggedUser);
+        responseUser.setToken(AuthUtil.generateToken());
+        return new ResponseEntity<>(responseUser, HttpStatus.OK);
     }
 
     @PatchMapping(path = USER_ENDPOINT + "/{userId}")
-    public ResponseEntity<UserDTO> updateUser(@Nonnull @PathVariable("userId") String userId, @RequestBody @Valid UserUpdateDTO userUpdateDTO) {
+    public ResponseEntity<UserResponse> updateUser(@Nonnull @PathVariable("userId") String userId, @RequestBody @Valid UserUpdateDTO userUpdateDTO) {
 
         User updatedUser = userService.updateUser(userId, new UserNameValue(userUpdateDTO.getName()), new UserPasswordValue(userUpdateDTO.getPassword()),
                 new UserEmailValue(userUpdateDTO.getEmail()));
-        UserDTO responseUserDTO = RestUserMapper.getMapper.mapToUserDTO(updatedUser);
-        return new ResponseEntity<>(responseUserDTO, HttpStatus.OK);
+        UserResponse responseUser = RestUserMapper.getMapper.mapToUserDTO(updatedUser);
+        return new ResponseEntity<>(responseUser, HttpStatus.OK);
     }
 }

@@ -7,7 +7,7 @@ import java.util.List;
 @Data
 public class TemplateUpdateDTO {
 
-    private List<String> canals;
+    private List<String> channels;
 
     private String text;
 }

@@ -5,11 +5,11 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class TemplateDTO {
+public class TemplateResponse {
 
     private String id;
 
-    private List<String> canals;
+    private List<String> channels;
 
     private String text;
 

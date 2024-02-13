@@ -8,12 +8,12 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 @Component
-public class JpaDbUserRepository implements UserRepository {
+public class JpaUserRepository implements UserRepository {
 
     private final SpringDataJpaUserRepository userRepository;
 
     @Autowired
-    public JpaDbUserRepository(SpringDataJpaUserRepository userRepository) {
+    public JpaUserRepository(SpringDataJpaUserRepository userRepository) {
 
         this.userRepository = userRepository;
     }
@@ -21,34 +21,22 @@ public class JpaDbUserRepository implements UserRepository {
     @Override
     public User save(User user) {
 
-        UserEntity userEntity = JpaDbUserMapper.getMapper.mapToUserEntity(user);
+        UserEntity userEntity = JpaUserMapper.getMapper.mapToUserEntity(user);
         UserEntity savedUser = userRepository.save(userEntity);
-        return JpaDbUserMapper.getMapper.mapToUser(savedUser);
+        return JpaUserMapper.getMapper.mapToUser(savedUser);
     }
 
     @Override
     public Optional<User> findById(String userId) {
 
         Optional<UserEntity> userOptional = userRepository.findById(userId);
-
-        if (userOptional.isPresent()) {
-            User user = JpaDbUserMapper.getMapper.mapToUser(userOptional.get());
-            return Optional.of(user);
-        } else {
-            return Optional.empty();
-        }
+        return userOptional.map(JpaUserMapper.getMapper::mapToUser);
     }
 
     @Override
     public Optional<User> findByEmail(String email) {
 
         Optional<UserEntity> userOptional = userRepository.findByEmail(email);
-
-        if (userOptional.isPresent()) {
-            User user = JpaDbUserMapper.getMapper.mapToUser(userOptional.get());
-            return Optional.of(user);
-        } else {
-            return Optional.empty();
-        }
+        return userOptional.map(JpaUserMapper.getMapper::mapToUser);
     }
 }

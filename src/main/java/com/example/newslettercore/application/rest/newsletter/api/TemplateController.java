@@ -2,8 +2,8 @@ package com.example.newslettercore.application.rest.newsletter.api;
 
 import com.example.newslettercore.application.rest.newsletter.mapper.RestTemplateMapper;
 import com.example.newslettercore.application.rest.newsletter.model.TemplateCreateDTO;
-import com.example.newslettercore.application.rest.newsletter.model.TemplateDTO;
 import com.example.newslettercore.application.rest.newsletter.model.TemplateQueryParams;
+import com.example.newslettercore.application.rest.newsletter.model.TemplateResponse;
 import com.example.newslettercore.application.rest.newsletter.model.TemplateUpdateDTO;
 import com.example.newslettercore.domain.newsletter.model.Template;
 import com.example.newslettercore.domain.newsletter.service.NewsletterService;
@@ -43,38 +43,38 @@ public class TemplateController {
     }
 
     @PostMapping(path = NEWSLETTER_ID_ENDPOINT + TEMPLATE_ENDPOINT)
-    public ResponseEntity<TemplateDTO> createTemplate(@Nonnull @PathVariable("newsletterId") String newsletterId,
-                                                      @RequestBody @Valid TemplateCreateDTO templateCreateDTO) {
+    public ResponseEntity<TemplateResponse> createTemplate(@Nonnull @PathVariable("newsletterId") String newsletterId,
+                                                           @RequestBody @Valid TemplateCreateDTO templateCreateDTO) {
 
-        Template template = newsletterService.createTemplate(newsletterId, templateCreateDTO.getCanals(), templateCreateDTO.getText());
-        TemplateDTO responseTemplateDTO = RestTemplateMapper.getMapper.mapToTemplateDTO(template);
-        return new ResponseEntity<>(responseTemplateDTO, HttpStatus.CREATED);
+        Template template = newsletterService.createTemplate(newsletterId, templateCreateDTO.getChannels(), templateCreateDTO.getText());
+        TemplateResponse responseTemplate = RestTemplateMapper.getMapper.mapToTemplateDTO(template);
+        return new ResponseEntity<>(responseTemplate, HttpStatus.CREATED);
     }
 
     @GetMapping(path = NEWSLETTER_ID_ENDPOINT + TEMPLATE_ENDPOINT)
-    public ResponseEntity<Collection<TemplateDTO>> findTemplatesByParams(@Nonnull @PathVariable("newsletterId") String newsletterId,
-                                                                           TemplateQueryParams templateQueryParams) {
+    public ResponseEntity<Collection<TemplateResponse>> findTemplatesByParams(@Nonnull @PathVariable("newsletterId") String newsletterId,
+                                                                              TemplateQueryParams templateQueryParams) {
 
-        Collection<Template> templates = newsletterService.getTemplatesByParams(newsletterId, templateQueryParams);
-        Collection<TemplateDTO> responseTemplateDTOs = RestTemplateMapper.getMapper.mapToTemplateDTOs(templates);
-        return ResponseEntity.ok(responseTemplateDTOs);
+        Collection<Template> templates = newsletterService.getTemplatesByParams(newsletterId, templateQueryParams.getChannel());
+        Collection<TemplateResponse> responseTemplates = RestTemplateMapper.getMapper.mapToTemplateDTOs(templates);
+        return ResponseEntity.ok(responseTemplates);
     }
 
     @GetMapping(path = TEMPLATE_ENDPOINT + "/{templateId}")
-    public ResponseEntity<TemplateDTO> findTemplateById(@Nonnull @PathVariable("templateId") String templateId) {
+    public ResponseEntity<TemplateResponse> findTemplateById(@Nonnull @PathVariable("templateId") String templateId) {
 
         Template template = newsletterService.getTemplateById(templateId);
-        TemplateDTO responseTemplateDTO = RestTemplateMapper.getMapper.mapToTemplateDTO(template);
-        return ResponseEntity.ok(responseTemplateDTO);
+        TemplateResponse responseTemplate = RestTemplateMapper.getMapper.mapToTemplateDTO(template);
+        return ResponseEntity.ok(responseTemplate);
     }
 
     @PatchMapping(path = TEMPLATE_ENDPOINT + "/{templateId}")
-    public ResponseEntity<TemplateDTO> updateTemplate(@Nonnull @PathVariable("templateId") String templateId,
-                                                      @RequestBody @Valid TemplateUpdateDTO templateUpdateDTO) {
+    public ResponseEntity<TemplateResponse> updateTemplate(@Nonnull @PathVariable("templateId") String templateId,
+                                                           @RequestBody @Valid TemplateUpdateDTO templateUpdateDTO) {
 
-        Template template = newsletterService.updateTemplate(templateId, templateUpdateDTO.getCanals(), templateUpdateDTO.getText());
-        TemplateDTO responseTemplateDTO = RestTemplateMapper.getMapper.mapToTemplateDTO(template);
-        return ResponseEntity.ok(responseTemplateDTO);
+        Template template = newsletterService.updateTemplate(templateId, templateUpdateDTO.getChannels(), templateUpdateDTO.getText());
+        TemplateResponse responseTemplate = RestTemplateMapper.getMapper.mapToTemplateDTO(template);
+        return ResponseEntity.ok(responseTemplate);
     }
 
     @DeleteMapping(path = TEMPLATE_ENDPOINT + "/{templateId}")

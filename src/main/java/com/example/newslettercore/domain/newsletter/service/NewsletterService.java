@@ -1,7 +1,5 @@
 package com.example.newslettercore.domain.newsletter.service;
 
-import com.example.newslettercore.application.rest.newsletter.model.NewsletterQueryParams;
-import com.example.newslettercore.application.rest.newsletter.model.TemplateQueryParams;
 import com.example.newslettercore.domain.exception.NewsletterCoreObjectNotFoundException;
 import com.example.newslettercore.domain.exception.TemplateNotSavedException;
 import com.example.newslettercore.domain.newsletter.model.Newsletter;
@@ -11,9 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class NewsletterService {
@@ -33,18 +29,13 @@ public class NewsletterService {
 
     public Newsletter getNewsletterById(String newsletterId) {
 
-        Optional<Newsletter> newsletterOptional = newsletterRepository.findNewsletterById(newsletterId);
-
-        if (newsletterOptional.isEmpty()) {
-            throw new NewsletterCoreObjectNotFoundException(Newsletter.class.getSimpleName(), newsletterId);
-        }
-
-        return newsletterOptional.get();
+        return newsletterRepository.findNewsletterById(newsletterId)
+                .orElseThrow(() -> new NewsletterCoreObjectNotFoundException(Newsletter.class.getSimpleName(), newsletterId));
     }
 
-    public Collection<Newsletter> getNewslettersByParams(NewsletterQueryParams newsletterQueryParams) {
+    public Collection<Newsletter> getNewslettersByParams(String tag) {
 
-        return newsletterRepository.findNewslettersByParams(newsletterQueryParams);
+        return newsletterRepository.findNewslettersByParams(tag);
     }
 
     public Newsletter updateNewsletter(String newsletterId, Collection<String> tags, String cronSendingFrequency) {
@@ -67,32 +58,19 @@ public class NewsletterService {
         Newsletter savedNewsletter = newsletterRepository.save(newsletter);
 
         Set<Template> newTemplates = savedNewsletter.getNewTemplates(newsletter.getTemplates());
-        if (newTemplates.isEmpty()) {
-            throw new TemplateNotSavedException();
-        }
-
-        return newTemplates.stream().findFirst().get();
+        return newTemplates.stream().findFirst()
+                .orElseThrow(TemplateNotSavedException::new);
     }
 
-    public Collection<Template> getTemplatesByParams(String newsletterId, TemplateQueryParams templateQueryParams) {
+    public Collection<Template> getTemplatesByParams(String newsletterId, String channel) {
 
-        Newsletter newsletter = getNewsletterById(newsletterId);
-        return newsletter.getTemplates().stream()
-                .filter(template -> template.getCanals().stream()
-                        .anyMatch(canal -> canal.equals(templateQueryParams.getCanal()))
-                )
-                .collect(Collectors.toList());
+        return newsletterRepository.findTemplatesByParams(newsletterId, channel);
     }
 
     public Template getTemplateById(String templateId) {
 
-        Optional<Template> templateOptional = newsletterRepository.findTemplateById(templateId);
-
-        if (templateOptional.isEmpty()) {
-            throw new NewsletterCoreObjectNotFoundException(Template.class.getSimpleName(), templateId);
-        }
-
-        return templateOptional.get();
+        return newsletterRepository.findTemplateById(templateId)
+                .orElseThrow(() -> new NewsletterCoreObjectNotFoundException(Template.class.getSimpleName(), templateId));
     }
 
     public Template updateTemplate(String templateId, List<String> canals, String text) {

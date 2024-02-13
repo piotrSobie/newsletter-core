@@ -1,6 +1,5 @@
 package com.example.newslettercore.domain.newsletter.repository;
 
-import com.example.newslettercore.application.rest.newsletter.model.NewsletterQueryParams;
 import com.example.newslettercore.domain.newsletter.model.Newsletter;
 import com.example.newslettercore.domain.newsletter.model.Template;
 
@@ -13,11 +12,13 @@ public interface NewsletterRepository {
 
     Optional<Newsletter> findNewsletterById(String newsletterId);
 
-    Collection<Newsletter> findNewslettersByParams(NewsletterQueryParams newsletterQueryParams);
+    Collection<Newsletter> findNewslettersByParams(String tag);
 
     void deleteNewsletterById(String newsletterId);
 
     Optional<Template> findTemplateById(String templateId);
+
+    Collection<Template> findTemplatesByParams(String newsletterId, String channel);
 
     void deleteTemplateById(String templateId);
 }

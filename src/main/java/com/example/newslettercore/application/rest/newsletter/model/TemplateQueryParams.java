@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class TemplateQueryParams {
 
-    private String canal;
+    private String channel;
 }

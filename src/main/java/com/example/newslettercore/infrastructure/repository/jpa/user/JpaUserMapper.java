@@ -5,9 +5,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
 @Mapper
-public interface JpaDbUserMapper {
+public interface JpaUserMapper {
 
-    JpaDbUserMapper getMapper = Mappers.getMapper(JpaDbUserMapper.class);
+    JpaUserMapper getMapper = Mappers.getMapper(JpaUserMapper.class);
 
     UserEntity mapToUserEntity(User user);
 

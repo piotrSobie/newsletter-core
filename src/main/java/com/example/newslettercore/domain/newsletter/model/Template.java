@@ -14,24 +14,24 @@ public class Template {
 
     private String id;
 
-    private List<String> canals;
+    private List<String> channels;
 
     private String text;
 
     @Setter
     private Newsletter newsletter;
 
-    public Template(String id, List<String> canals, String text, Newsletter newsletter) {
+    public Template(String id, List<String> channels, String text, Newsletter newsletter) {
 
-        this(canals, text, newsletter);
+        this(channels, text, newsletter);
         this.id = id;
     }
 
-    public Template(List<String> canals, String text, Newsletter newsletter) {
+    public Template(List<String> channels, String text, Newsletter newsletter) {
 
-        validateTemplateData(canals, text);
+        validateTemplateData(channels, text);
 
-        this.canals = canals;
+        this.channels = channels;
         this.text = text;
         this.newsletter = newsletter;
     }
@@ -59,7 +59,7 @@ public class Template {
     public Template updateTemplate(List<String> canals, String text) {
 
         if (!CollectionUtils.isEmpty(canals)) {
-            this.canals = canals;
+            this.channels = canals;
         }
 
         if (Strings.isNotEmpty(text)) {
