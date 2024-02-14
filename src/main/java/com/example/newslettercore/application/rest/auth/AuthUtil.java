@@ -5,7 +5,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class AuthUtil {
 
-    public static final String generateToken() {
+    public static String generateToken() {
 
         return "TODO";
     }

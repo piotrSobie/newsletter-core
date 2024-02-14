@@ -13,5 +13,5 @@ public class TemplateResponse {
 
     private String text;
 
-    private TemplatesNewsletterDTO newsletter;
+    private String newsletterId;
 }
