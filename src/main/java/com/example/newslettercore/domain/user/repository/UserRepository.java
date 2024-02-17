@@ -1,17 +1,14 @@
 package com.example.newslettercore.domain.user.repository;
 
-import com.example.newslettercore.domain.user.model.UserCreateDTO;
-import com.example.newslettercore.domain.user.model.UserDTO;
+import com.example.newslettercore.domain.user.model.User;
 
 import java.util.Optional;
 
 public interface UserRepository {
 
-    UserDTO save(UserCreateDTO userCreateDTO);
+    User save(User user);
 
-    UserDTO save(UserDTO userDTO);
+    Optional<User> findById(String userId);
 
-    Optional<UserDTO> findById(String userId);
-
-    Optional<UserDTO> findByEmail(String email);
+    Optional<User> findByEmail(String email);
 }

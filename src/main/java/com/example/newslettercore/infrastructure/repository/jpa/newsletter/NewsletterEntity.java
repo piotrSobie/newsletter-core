@@ -1,6 +1,6 @@
 package com.example.newslettercore.infrastructure.repository.jpa.newsletter;
 
-import com.example.newslettercore.infrastructure.repository.jpa.newsletter.template.TemplateEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -35,6 +35,6 @@ public class NewsletterEntity {
     @Column(name = "cron_sending_frequency")
     private String cronSendingFrequency;
 
-    @OneToMany(mappedBy = "newsletterEntity")
+    @OneToMany(mappedBy = "newsletter", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TemplateEntity> templates;
 }

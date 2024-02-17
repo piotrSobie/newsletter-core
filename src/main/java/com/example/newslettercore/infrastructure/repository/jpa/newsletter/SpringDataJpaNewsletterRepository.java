@@ -10,5 +10,5 @@ import java.util.Collection;
 public interface SpringDataJpaNewsletterRepository extends JpaRepository<NewsletterEntity, String> {
 
     @Query(value = "select n from NewsletterEntity n join n.tags t where t = :tag")
-    Collection<NewsletterEntity> findByParams(String tag);
+    Collection<NewsletterEntity> findNewslettersByParams(String tag);
 }
