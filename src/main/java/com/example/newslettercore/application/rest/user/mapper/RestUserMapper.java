@@ -10,5 +10,5 @@ public interface RestUserMapper {
 
     RestUserMapper getMapper = Mappers.getMapper(RestUserMapper.class);
 
-    UserResponse mapToUserDTO(User user);
+    UserResponse userToUserResponse(User user);
 }

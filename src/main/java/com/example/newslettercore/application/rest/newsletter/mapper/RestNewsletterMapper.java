@@ -12,7 +12,7 @@ public interface RestNewsletterMapper {
 
     RestNewsletterMapper getMapper = Mappers.getMapper(RestNewsletterMapper.class);
 
-    NewsletterResponse mapToNewsletterDTO(Newsletter newsletter);
+    NewsletterResponse newsletterToNewsletterResponse(Newsletter newsletter);
 
-    Collection<NewsletterResponse> mapToNewsletterDTO(Collection<Newsletter> newsletters);
+    Collection<NewsletterResponse> newslettersToNewsletterResponses(Collection<Newsletter> newsletters);
 }

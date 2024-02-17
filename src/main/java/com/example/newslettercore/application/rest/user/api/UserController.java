@@ -46,7 +46,7 @@ public class UserController {
 
         User createdUser = userService.createUser(new UserNameValue(userCreateDTO.getName()), new UserPasswordValue(userCreateDTO.getPassword()),
                 new UserEmailValue(userCreateDTO.getEmail()));
-        UserResponse responseUser = RestUserMapper.getMapper.mapToUserDTO(createdUser);
+        UserResponse responseUser = RestUserMapper.getMapper.userToUserResponse(createdUser);
         return new ResponseEntity<>(responseUser, HttpStatus.CREATED);
     }
 
@@ -54,7 +54,7 @@ public class UserController {
     public ResponseEntity<UserResponse> loginUser(@RequestBody UserLoginDataDTO userLoginDataDTO) {
 
         User loggedUser = userService.loginUser(new UserEmailValue(userLoginDataDTO.getEmail()), new UserPasswordValue(userLoginDataDTO.getPassword()));
-        UserResponse responseUser = RestUserMapper.getMapper.mapToUserDTO(loggedUser);
+        UserResponse responseUser = RestUserMapper.getMapper.userToUserResponse(loggedUser);
         responseUser.setToken(AuthUtil.generateToken());
         return new ResponseEntity<>(responseUser, HttpStatus.OK);
     }
@@ -64,7 +64,7 @@ public class UserController {
 
         User updatedUser = userService.updateUser(userId, new UserNameValue(userUpdateDTO.getName()), new UserPasswordValue(userUpdateDTO.getPassword()),
                 new UserEmailValue(userUpdateDTO.getEmail()));
-        UserResponse responseUser = RestUserMapper.getMapper.mapToUserDTO(updatedUser);
+        UserResponse responseUser = RestUserMapper.getMapper.userToUserResponse(updatedUser);
         return new ResponseEntity<>(responseUser, HttpStatus.OK);
     }
 }

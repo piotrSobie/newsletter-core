@@ -14,7 +14,7 @@ public interface RestTemplateMapper {
     RestTemplateMapper getMapper = Mappers.getMapper(RestTemplateMapper.class);
 
     @Mapping(source = "newsletter.id", target = "newsletterId")
-    TemplateResponse mapToTemplateDTO(Template template);
+    TemplateResponse templateToTemplateResponse(Template template);
 
-    Collection<TemplateResponse> mapToTemplateDTOs(Collection<Template> templates);
+    Collection<TemplateResponse> templatesToTemplateResponses(Collection<Template> templates);
 }

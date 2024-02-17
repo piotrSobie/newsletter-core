@@ -47,7 +47,7 @@ public class TemplateController {
                                                            @RequestBody @Valid TemplateCreateDTO templateCreateDTO) {
 
         Template template = newsletterService.createTemplate(newsletterId, templateCreateDTO.getChannels(), templateCreateDTO.getText());
-        TemplateResponse responseTemplate = RestTemplateMapper.getMapper.mapToTemplateDTO(template);
+        TemplateResponse responseTemplate = RestTemplateMapper.getMapper.templateToTemplateResponse(template);
         return new ResponseEntity<>(responseTemplate, HttpStatus.CREATED);
     }
 
@@ -56,7 +56,7 @@ public class TemplateController {
                                                                               TemplateQueryParams templateQueryParams) {
 
         Collection<Template> templates = newsletterService.getTemplatesByParams(newsletterId, templateQueryParams.getChannel());
-        Collection<TemplateResponse> responseTemplates = RestTemplateMapper.getMapper.mapToTemplateDTOs(templates);
+        Collection<TemplateResponse> responseTemplates = RestTemplateMapper.getMapper.templatesToTemplateResponses(templates);
         return ResponseEntity.ok(responseTemplates);
     }
 
@@ -64,7 +64,7 @@ public class TemplateController {
     public ResponseEntity<TemplateResponse> findTemplateById(@Nonnull @PathVariable("templateId") String templateId) {
 
         Template template = newsletterService.getTemplateById(templateId);
-        TemplateResponse responseTemplate = RestTemplateMapper.getMapper.mapToTemplateDTO(template);
+        TemplateResponse responseTemplate = RestTemplateMapper.getMapper.templateToTemplateResponse(template);
         return ResponseEntity.ok(responseTemplate);
     }
 
@@ -73,7 +73,7 @@ public class TemplateController {
                                                            @RequestBody @Valid TemplateUpdateDTO templateUpdateDTO) {
 
         Template template = newsletterService.updateTemplate(templateId, templateUpdateDTO.getChannels(), templateUpdateDTO.getText());
-        TemplateResponse responseTemplate = RestTemplateMapper.getMapper.mapToTemplateDTO(template);
+        TemplateResponse responseTemplate = RestTemplateMapper.getMapper.templateToTemplateResponse(template);
         return ResponseEntity.ok(responseTemplate);
     }
 

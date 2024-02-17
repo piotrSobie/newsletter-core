@@ -1,7 +1,6 @@
 package com.example.newslettercore.domain.newsletter.service;
 
 import com.example.newslettercore.domain.exception.NewsletterCoreObjectNotFoundException;
-import com.example.newslettercore.domain.exception.TemplateNotSavedException;
 import com.example.newslettercore.domain.newsletter.model.Newsletter;
 import com.example.newslettercore.domain.newsletter.model.Template;
 import com.example.newslettercore.domain.newsletter.repository.NewsletterRepository;
@@ -58,8 +57,7 @@ public class NewsletterService {
         Newsletter savedNewsletter = newsletterRepository.save(newsletter);
 
         Set<Template> newTemplates = savedNewsletter.getNewTemplates(newsletter.getTemplates());
-        return newTemplates.stream().findFirst()
-                .orElseThrow(TemplateNotSavedException::new);
+        return newTemplates.stream().findFirst().get();
     }
 
     public Collection<Template> getTemplatesByParams(String newsletterId, String channel) {

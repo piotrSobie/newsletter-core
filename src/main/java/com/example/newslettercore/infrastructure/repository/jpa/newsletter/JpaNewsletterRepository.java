@@ -25,23 +25,23 @@ public class JpaNewsletterRepository implements NewsletterRepository {
     @Override
     public Newsletter save(Newsletter newsletter) {
 
-        NewsletterEntity newsletterEntity = JpaNewsletterMapper.getMapper.mapToNewsletterEntity(newsletter);
+        NewsletterEntity newsletterEntity = JpaNewsletterMapper.getMapper.newsletterToNewsletterEntity(newsletter);
         NewsletterEntity savedNewsletter = newsletterRepository.saveAndFlush(newsletterEntity);
-        return JpaNewsletterMapper.getMapper.mapToNewsletter(savedNewsletter);
+        return JpaNewsletterMapper.getMapper.newsletterEntityToNewsletter(savedNewsletter);
     }
 
     @Override
     public Optional<Newsletter> findNewsletterById(String newsletterId) {
 
         Optional<NewsletterEntity> newsletterOptional = newsletterRepository.findById(newsletterId);
-        return newsletterOptional.map(JpaNewsletterMapper.getMapper::mapToNewsletter);
+        return newsletterOptional.map(JpaNewsletterMapper.getMapper::newsletterEntityToNewsletter);
     }
 
     @Override
     public Collection<Newsletter> findNewslettersByParams(String tag) {
 
         Collection<NewsletterEntity> newsletterEntities = newsletterRepository.findNewslettersByParams(tag);
-        return JpaNewsletterMapper.getMapper.mapToNewsletters(newsletterEntities);
+        return JpaNewsletterMapper.getMapper.newsletterEntitiesToNewsletters(newsletterEntities);
     }
 
     @Override
@@ -55,8 +55,8 @@ public class JpaNewsletterRepository implements NewsletterRepository {
 
         Optional<TemplateEntity> templateEntityOptional = templateRepository.findById(templateId);
         return templateEntityOptional.map(templateEntity -> {
-            Template template = JpaNewsletterMapper.getMapper.mapToTemplate(templateEntityOptional.get());
-            Newsletter newsletter = JpaNewsletterMapper.getMapper.mapToNewsletter(templateEntityOptional.get().getNewsletter());
+            Template template = JpaNewsletterMapper.getMapper.templateEntityToTemplate(templateEntityOptional.get());
+            Newsletter newsletter = JpaNewsletterMapper.getMapper.newsletterEntityToNewsletter(templateEntityOptional.get().getNewsletter());
             template.setNewsletter(newsletter);
             return template;
         });
@@ -66,7 +66,7 @@ public class JpaNewsletterRepository implements NewsletterRepository {
     public Collection<Template> findTemplatesByParams(String newsletterId, String channel) {
 
         Collection<TemplateEntity> templateEntities = templateRepository.findByParams(newsletterId, channel);
-        return JpaNewsletterMapper.getMapper.mapToTemplates(templateEntities);
+        return JpaNewsletterMapper.getMapper.templateEntitiesToTemplates(templateEntities);
     }
 
     @Override

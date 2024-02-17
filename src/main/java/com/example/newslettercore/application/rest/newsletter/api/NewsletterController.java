@@ -45,7 +45,7 @@ public class NewsletterController {
     public ResponseEntity<NewsletterResponse> createNewsletter(@RequestBody @Valid NewsletterCreteDTO newsletterCreteDTO) {
 
         Newsletter createdNewsletter = newsletterService.createNewsletter(newsletterCreteDTO.getTags(), newsletterCreteDTO.getCronSendingFrequency());
-        NewsletterResponse responseNewsletter = RestNewsletterMapper.getMapper.mapToNewsletterDTO(createdNewsletter);
+        NewsletterResponse responseNewsletter = RestNewsletterMapper.getMapper.newsletterToNewsletterResponse(createdNewsletter);
         return new ResponseEntity<>(responseNewsletter, HttpStatus.CREATED);
     }
 
@@ -53,7 +53,7 @@ public class NewsletterController {
     public ResponseEntity<Collection<NewsletterResponse>> findNewslettersByParams(NewsletterQueryParams newsletterQueryParams) {
 
         Collection<Newsletter> foundNewsletters = newsletterService.getNewslettersByParams(newsletterQueryParams.getTag());
-        Collection<NewsletterResponse> responseNewsletters = RestNewsletterMapper.getMapper.mapToNewsletterDTO(foundNewsletters);
+        Collection<NewsletterResponse> responseNewsletters = RestNewsletterMapper.getMapper.newslettersToNewsletterResponses(foundNewsletters);
         return ResponseEntity.ok(responseNewsletters);
     }
 
@@ -61,7 +61,7 @@ public class NewsletterController {
     public ResponseEntity<NewsletterResponse> findNewsletterById(@Nonnull @PathVariable("newsletterId") String newsletterId) {
 
         Newsletter newsletter = newsletterService.getNewsletterById(newsletterId);
-        NewsletterResponse responseNewsletter = RestNewsletterMapper.getMapper.mapToNewsletterDTO(newsletter);
+        NewsletterResponse responseNewsletter = RestNewsletterMapper.getMapper.newsletterToNewsletterResponse(newsletter);
         return new ResponseEntity<>(responseNewsletter, HttpStatus.OK);
     }
 
@@ -71,7 +71,7 @@ public class NewsletterController {
 
         Newsletter updatedNewsletter = newsletterService.updateNewsletter(newsletterId, newsletterUpdateDTO.getTags(),
                 newsletterUpdateDTO.getCronSendingFrequency());
-        NewsletterResponse responseNewsletter = RestNewsletterMapper.getMapper.mapToNewsletterDTO(updatedNewsletter);
+        NewsletterResponse responseNewsletter = RestNewsletterMapper.getMapper.newsletterToNewsletterResponse(updatedNewsletter);
         return new ResponseEntity<>(responseNewsletter, HttpStatus.OK);
     }
 

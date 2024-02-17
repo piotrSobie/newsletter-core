@@ -9,9 +9,9 @@ public interface JpaUserMapper {
 
     JpaUserMapper getMapper = Mappers.getMapper(JpaUserMapper.class);
 
-    UserEntity mapToUserEntity(User user);
+    UserEntity userToUserEntity(User user);
 
-    default User mapToUser(UserEntity userEntity) {
+    default User userEntityToUser(UserEntity userEntity) {
 
         return new User(userEntity.getId(), userEntity.getName(), userEntity.getPassword(), userEntity.getEmail());
     }

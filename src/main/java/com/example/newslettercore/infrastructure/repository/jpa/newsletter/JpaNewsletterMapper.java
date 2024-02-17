@@ -20,10 +20,10 @@ public interface JpaNewsletterMapper {
 
     JpaNewsletterMapper getMapper = Mappers.getMapper(JpaNewsletterMapper.class);
 
-    NewsletterEntity mapToNewsletterEntity(Newsletter newsletter);
+    NewsletterEntity newsletterToNewsletterEntity(Newsletter newsletter);
 
     @AfterMapping
-    default void afterMapToNewsletterEntity(Newsletter newsletter, @MappingTarget NewsletterEntity newsletterEntity) {
+    default void afterNewsletterToNewsletterEntity(Newsletter newsletter, @MappingTarget NewsletterEntity newsletterEntity) {
 
         if (CollectionUtils.isNotEmpty(newsletter.getTemplates())) {
             newsletterEntity.getTemplates() //
@@ -49,41 +49,41 @@ public interface JpaNewsletterMapper {
         return templateEntity;
     }
 
-    default Collection<Newsletter> mapToNewsletters(Collection<NewsletterEntity> newsletterEntities) {
+    default Collection<Newsletter> newsletterEntitiesToNewsletters(Collection<NewsletterEntity> newsletterEntities) {
 
         return newsletterEntities.stream() //
-                .map(getMapper::mapToNewsletter) //
+                .map(getMapper::newsletterEntityToNewsletter) //
                 .collect(toList());
     }
 
-    default Newsletter mapToNewsletter(NewsletterEntity newsletterEntity) {
+    default Newsletter newsletterEntityToNewsletter(NewsletterEntity newsletterEntity) {
 
         Newsletter newsletter = new Newsletter(newsletterEntity.getId(), newsletterEntity.getTags(), newsletterEntity.getCronSendingFrequency());
-        newsletter.setTemplates(mapToTemplates(newsletterEntity.getTemplates()));
+        newsletter.setTemplates(templateEntitiesToTemplates(newsletterEntity.getTemplates()));
 
-        afterMapToNewsletter(newsletterEntity, newsletter);
+        afterNewsletterEntityToNewsletter(newsletterEntity, newsletter);
 
         return newsletter;
     }
 
-    default Template mapToTemplate(TemplateEntity templateEntity) {
+    default Template templateEntityToTemplate(TemplateEntity templateEntity) {
 
         return new Template(templateEntity.getId(), templateEntity.getChannels(), templateEntity.getText(), null);
     }
 
-    default List<Template> mapToTemplates(Collection<TemplateEntity> templateEntities) {
+    default List<Template> templateEntitiesToTemplates(Collection<TemplateEntity> templateEntities) {
 
         if (CollectionUtils.isEmpty(templateEntities)) {
             return new ArrayList<>();
         }
 
         return templateEntities.stream()
-                .map(this::mapToTemplate)
+                .map(this::templateEntityToTemplate)
                 .collect(Collectors.toList());
     }
 
     @AfterMapping
-    default void afterMapToNewsletter(NewsletterEntity newsletterEntity, @MappingTarget Newsletter newsletter) {
+    default void afterNewsletterEntityToNewsletter(NewsletterEntity newsletterEntity, @MappingTarget Newsletter newsletter) {
 
         if (CollectionUtils.isNotEmpty(newsletterEntity.getTemplates())) {
             newsletter.getTemplates() //

@@ -21,22 +21,22 @@ public class JpaUserRepository implements UserRepository {
     @Override
     public User save(User user) {
 
-        UserEntity userEntity = JpaUserMapper.getMapper.mapToUserEntity(user);
+        UserEntity userEntity = JpaUserMapper.getMapper.userToUserEntity(user);
         UserEntity savedUser = userRepository.save(userEntity);
-        return JpaUserMapper.getMapper.mapToUser(savedUser);
+        return JpaUserMapper.getMapper.userEntityToUser(savedUser);
     }
 
     @Override
     public Optional<User> findById(String userId) {
 
         Optional<UserEntity> userOptional = userRepository.findById(userId);
-        return userOptional.map(JpaUserMapper.getMapper::mapToUser);
+        return userOptional.map(JpaUserMapper.getMapper::userEntityToUser);
     }
 
     @Override
     public Optional<User> findByEmail(String email) {
 
         Optional<UserEntity> userOptional = userRepository.findByEmail(email);
-        return userOptional.map(JpaUserMapper.getMapper::mapToUser);
+        return userOptional.map(JpaUserMapper.getMapper::userEntityToUser);
     }
 }
