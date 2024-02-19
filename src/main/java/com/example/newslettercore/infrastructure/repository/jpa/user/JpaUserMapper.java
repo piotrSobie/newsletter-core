@@ -13,6 +13,6 @@ public interface JpaUserMapper {
 
     default User userEntityToUser(UserEntity userEntity) {
 
-        return new User(userEntity.getId(), userEntity.getName(), userEntity.getPassword(), userEntity.getEmail());
+        return new User(userEntity.getId(), userEntity.getName(), userEntity.getPassword(), userEntity.getEmail(), userEntity.getRole());
     }
 }

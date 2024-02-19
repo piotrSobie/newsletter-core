@@ -1,7 +1,10 @@
 package com.example.newslettercore.infrastructure.repository.jpa.user;
 
+import com.example.newslettercore.domain.user.model.Role;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -27,4 +30,8 @@ public class UserEntity {
 
     @Column(name = "email")
     private String email;
+
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
+    private Role role;
 }

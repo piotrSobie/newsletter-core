@@ -78,15 +78,13 @@ public class Newsletter {
         return this;
     }
 
-    public Newsletter addTemplate(Template template) {
+    public void addTemplate(Template template) {
 
         if (CollectionUtils.isEmpty(templates)) {
             templates = new ArrayList<>();
         }
 
         templates.add(template);
-
-        return this;
     }
 
     public Set<Template> getNewTemplates(List<Template> oldTemplates) {

@@ -1,17 +1,18 @@
 package com.example.newslettercore.application.rest.user.model;
 
+import com.example.newslettercore.domain.user.model.Role;
 import lombok.Data;
 
 @Data
 public class UserResponse {
 
-    private String id;
+    protected String id;
 
-    private String name;
+    protected String name;
 
-    private String password;
+    protected String password;
 
-    private String email;
+    protected String email;
 
-    private String token;
+    protected Role role;
 }

@@ -1,9 +1,9 @@
 package com.example.newslettercore.domain.user.model;
 
-import com.example.newslettercore.domain.exception.CantLoginException;
 import com.example.newslettercore.domain.exception.UserEmailInvalidException;
 import com.example.newslettercore.domain.exception.UserNameInvalidException;
 import com.example.newslettercore.domain.exception.UserPasswordInvalidException;
+import com.example.newslettercore.domain.exception.UserRoleInvalidException;
 import lombok.Getter;
 import org.apache.logging.log4j.util.Strings;
 
@@ -18,26 +18,32 @@ public class User {
 
     private String email;
 
-    public User(String id, String name, String password, String email) {
+    private final Role role;
 
-        this(name, password, email);
+    public User(String id, String name, String password, String email, Role role) {
+
+        this(name, password, email, role);
         this.id = id;
     }
 
-    public User(String name, String password, String email) {
+    public User(String name, String password, String email, Role role) {
 
-        validateUserData(name, password, email);
+        validateUserData(name, password, email, role);
 
         this.name = name;
         this.password = password;
         this.email = email;
+        this.role = role;
     }
 
-    private void validateUserData(String name, String password, String email) {
+    private void validateUserData(String name, String password, String email, Role role) {
 
         validateName(name);
-        validatePassword(password);
+//        validatePassword(password);
+// todo - I have encoded password here. Password encoder is defined in application.rest.auth.configuration.ApplicationConfiguration. How can I handle
+//  password validation in rich object?
         validateEmail(email);
+        validateRole(role);
     }
 
     private void validateName(String name) {
@@ -66,14 +72,11 @@ public class User {
         }
     }
 
-    public User loginUser(String givenPassword) {
+    private void validateRole(Role role) {
 
-        boolean incorrectPassword = !password.equals(givenPassword);
-        if (incorrectPassword) {
-            throw new CantLoginException();
+        if (null == role) {
+            throw new UserRoleInvalidException();
         }
-
-        return this;
     }
 
     public User updateUser(String name, String password, String email) {
@@ -84,7 +87,7 @@ public class User {
         }
 
         if (Strings.isNotBlank(password)) {
-            validatePassword(password);
+//            validatePassword(password); // todo the same as in validateUserData
             this.password = password;
         }
 
