@@ -5,6 +5,7 @@ import com.example.newslettercore.domain.exception.CantLoginException;
 import com.example.newslettercore.domain.user.model.User;
 import com.example.newslettercore.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class ApplicationConfiguration {
 
     private final UserService userService;
+    private final ApplicationContext applicationContext;
 
     @Bean
     public UserDetailsService userDetailsService() {
@@ -35,7 +37,8 @@ public class ApplicationConfiguration {
     public AuthenticationProvider authenticationProvider() {
 
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService());
+        UserDetailsService userDetailsService = applicationContext.getBean(UserDetailsService.class);
+        authProvider.setUserDetailsService(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }

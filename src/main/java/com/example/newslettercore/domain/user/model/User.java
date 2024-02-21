@@ -2,7 +2,6 @@ package com.example.newslettercore.domain.user.model;
 
 import com.example.newslettercore.domain.exception.UserEmailInvalidException;
 import com.example.newslettercore.domain.exception.UserNameInvalidException;
-import com.example.newslettercore.domain.exception.UserPasswordInvalidException;
 import com.example.newslettercore.domain.exception.UserRoleInvalidException;
 import lombok.Getter;
 import org.apache.logging.log4j.util.Strings;
@@ -20,28 +19,25 @@ public class User {
 
     private final Role role;
 
-    public User(String id, String name, String password, String email, Role role) {
+    public User(String id, String name, String hashedPassword, String email, Role role) {
 
-        this(name, password, email, role);
+        this(name, hashedPassword, email, role);
         this.id = id;
     }
 
-    public User(String name, String password, String email, Role role) {
+    public User(String name, String hashedPassword, String email, Role role) {
 
-        validateUserData(name, password, email, role);
+        validateUserData(name, email, role);
 
         this.name = name;
-        this.password = password;
+        this.password = hashedPassword;
         this.email = email;
         this.role = role;
     }
 
-    private void validateUserData(String name, String password, String email, Role role) {
+    private void validateUserData(String name, String email, Role role) {
 
         validateName(name);
-//        validatePassword(password);
-// todo - I have encoded password here. Password encoder is defined in application.rest.auth.configuration.ApplicationConfiguration. How can I handle
-//  password validation in rich object?
         validateEmail(email);
         validateRole(role);
     }
@@ -50,17 +46,6 @@ public class User {
 
         if (name.length() > UserDataRequirements.MAX_USER_NAME_LENGTH) {
             throw new UserNameInvalidException();
-        }
-    }
-
-    private void validatePassword(String password) {
-
-        if (password.length() > UserDataRequirements.MAX_PASSWORD_LENGTH) {
-            throw new UserPasswordInvalidException();
-        }
-
-        if (password.length() < UserDataRequirements.MIN_PASSWORD_LENGTH) {
-            throw new UserPasswordInvalidException();
         }
     }
 
@@ -79,16 +64,15 @@ public class User {
         }
     }
 
-    public User updateUser(String name, String password, String email) {
+    public User updateUser(String name, String hashedPassword, String email) {
 
         if (Strings.isNotBlank(name)) {
             validateName(name);
             this.name = name;
         }
 
-        if (Strings.isNotBlank(password)) {
-//            validatePassword(password); // todo the same as in validateUserData
-            this.password = password;
+        if (Strings.isNotBlank(hashedPassword)) {
+            this.password = hashedPassword;
         }
 
         if (Strings.isNotBlank(email)) {

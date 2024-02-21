@@ -18,7 +18,11 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    private static final int TOKEN_DURATION_LENGTH_MILLIS = 1000 * 60 * 60 * 24;
+    private static final int HOURS_IN_DAY = 24;
+    private static final int MINUTES_IN_HOUR = 60;
+    private static final int SECONDS_IN_MINUTE = 60;
+    private static final int MILLIS_IN_SECOND = 1000;
+    private static final int TOKEN_DURATION_LENGTH_MILLIS = MILLIS_IN_SECOND * SECONDS_IN_MINUTE * MINUTES_IN_HOUR * HOURS_IN_DAY;
 
     @Value("${auth.token.secret.key}")
     private String secretKey;

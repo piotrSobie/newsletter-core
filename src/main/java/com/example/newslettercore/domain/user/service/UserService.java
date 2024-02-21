@@ -1,8 +1,10 @@
 package com.example.newslettercore.domain.user.service;
 
 import com.example.newslettercore.domain.exception.NewsletterCoreObjectNotFoundException;
+import com.example.newslettercore.domain.exception.UserPasswordInvalidException;
 import com.example.newslettercore.domain.user.model.Role;
 import com.example.newslettercore.domain.user.model.User;
+import com.example.newslettercore.domain.user.model.UserDataRequirements;
 import com.example.newslettercore.domain.user.repository.UserRepository;
 import com.example.newslettercore.domain.user.value.UserEmailValue;
 import com.example.newslettercore.domain.user.value.UserNameValue;
@@ -38,5 +40,16 @@ public class UserService {
     public Optional<User> findByEmail(String email) {
 
         return userRepository.findByEmail(email);
+    }
+
+    public void validatePassword(String password) {
+
+        if (password.length() > UserDataRequirements.MAX_PASSWORD_LENGTH) {
+            throw new UserPasswordInvalidException();
+        }
+
+        if (password.length() < UserDataRequirements.MIN_PASSWORD_LENGTH) {
+            throw new UserPasswordInvalidException();
+        }
     }
 }

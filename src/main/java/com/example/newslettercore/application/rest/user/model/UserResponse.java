@@ -6,13 +6,13 @@ import lombok.Data;
 @Data
 public class UserResponse {
 
-    protected String id;
+    private String id;
 
-    protected String name;
+    private String name;
 
-    protected String password;
+    private String password;
 
-    protected String email;
+    private String email;
 
-    protected Role role;
+    private Role role;
 }

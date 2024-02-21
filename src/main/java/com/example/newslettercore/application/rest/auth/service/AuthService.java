@@ -30,6 +30,7 @@ public class AuthService {
 
     public AuthResponse register(UserCreateDTO userCreateDTO) {
 
+        userService.validatePassword(userCreateDTO.getPassword());
         String encodedPassword = passwordEncoder.encode(userCreateDTO.getPassword());
         User createdUser = userService.createUser(new UserNameValue(userCreateDTO.getName()), new UserPasswordValue(encodedPassword),
                 new UserEmailValue(userCreateDTO.getEmail()), userCreateDTO.getRole());
