@@ -1,32 +1,35 @@
 package com.example.newslettercore.domain.user.service;
 
 import com.example.newslettercore.domain.exception.NewsletterCoreObjectNotFoundException;
-import com.example.newslettercore.domain.exception.UserPasswordInvalidException;
+import com.example.newslettercore.domain.port.PasswordEncipher;
 import com.example.newslettercore.domain.user.model.Role;
 import com.example.newslettercore.domain.user.model.User;
-import com.example.newslettercore.domain.user.model.UserDataRequirements;
 import com.example.newslettercore.domain.user.repository.UserRepository;
 import com.example.newslettercore.domain.user.value.UserEmailValue;
 import com.example.newslettercore.domain.user.value.UserNameValue;
 import com.example.newslettercore.domain.user.value.UserPasswordValue;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
-
-    public UserService(UserRepository userRepository) {
-
-        this.userRepository = userRepository;
-    }
+    private final PasswordEncipher passwordEncipher;
 
     public User createUser(UserNameValue name, UserPasswordValue password, UserEmailValue email, Role role) {
 
         User userToCreate = new User(name.getValue(), password.getValue(), email.getValue(), role);
-        return userRepository.save(userToCreate);
+        return saveUser(userToCreate);
+    }
+
+    private User saveUser(User user) {
+
+        user.hashPassword(passwordEncipher::encodePassword);
+        return userRepository.save(user);
     }
 
     public User updateUser(String userId, UserNameValue name, UserPasswordValue password, UserEmailValue email) {
@@ -34,22 +37,11 @@ public class UserService {
         User foundUser = userRepository.findById(userId)
                 .orElseThrow(() -> new NewsletterCoreObjectNotFoundException(User.class.getSimpleName(), userId));
         User updatedUser = foundUser.updateUser(name.getValue(), password.getValue(), email.getValue());
-        return userRepository.save(updatedUser);
+        return saveUser(updatedUser);
     }
 
     public Optional<User> findByEmail(String email) {
 
         return userRepository.findByEmail(email);
-    }
-
-    public void validatePassword(String password) {
-
-        if (password.length() > UserDataRequirements.MAX_PASSWORD_LENGTH) {
-            throw new UserPasswordInvalidException();
-        }
-
-        if (password.length() < UserDataRequirements.MIN_PASSWORD_LENGTH) {
-            throw new UserPasswordInvalidException();
-        }
     }
 }

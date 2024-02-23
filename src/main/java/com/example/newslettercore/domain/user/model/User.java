@@ -2,9 +2,12 @@ package com.example.newslettercore.domain.user.model;
 
 import com.example.newslettercore.domain.exception.UserEmailInvalidException;
 import com.example.newslettercore.domain.exception.UserNameInvalidException;
+import com.example.newslettercore.domain.exception.UserPasswordInvalidException;
 import com.example.newslettercore.domain.exception.UserRoleInvalidException;
 import lombok.Getter;
 import org.apache.logging.log4j.util.Strings;
+
+import java.util.function.UnaryOperator;
 
 @Getter
 public class User {
@@ -19,26 +22,30 @@ public class User {
 
     private final Role role;
 
-    public User(String id, String name, String hashedPassword, String email, Role role) {
+    public User(String id, String name, String password, String email, Role role) {
 
-        this(name, hashedPassword, email, role);
         this.id = id;
-    }
-
-    public User(String name, String hashedPassword, String email, Role role) {
-
-        validateUserData(name, email, role);
-
         this.name = name;
-        this.password = hashedPassword;
+        this.password = password;
         this.email = email;
         this.role = role;
     }
 
-    private void validateUserData(String name, String email, Role role) {
+    public User(String name, String password, String email, Role role) {
+
+        validateUserData(name, password, email, role);
+
+        this.name = name;
+        this.password = password;
+        this.email = email;
+        this.role = role;
+    }
+
+    private void validateUserData(String name, String password, String email, Role role) {
 
         validateName(name);
         validateEmail(email);
+        validatePassword(password);
         validateRole(role);
     }
 
@@ -57,6 +64,17 @@ public class User {
         }
     }
 
+    public void validatePassword(String password) {
+
+        if (password.length() > UserDataRequirements.MAX_PASSWORD_LENGTH) {
+            throw new UserPasswordInvalidException();
+        }
+
+        if (password.length() < UserDataRequirements.MIN_PASSWORD_LENGTH) {
+            throw new UserPasswordInvalidException();
+        }
+    }
+
     private void validateRole(Role role) {
 
         if (null == role) {
@@ -64,15 +82,16 @@ public class User {
         }
     }
 
-    public User updateUser(String name, String hashedPassword, String email) {
+    public User updateUser(String name, String password, String email) {
 
         if (Strings.isNotBlank(name)) {
             validateName(name);
             this.name = name;
         }
 
-        if (Strings.isNotBlank(hashedPassword)) {
-            this.password = hashedPassword;
+        if (Strings.isNotBlank(password)) {
+            validatePassword(password);
+            this.password = password;
         }
 
         if (Strings.isNotBlank(email)) {
@@ -81,5 +100,10 @@ public class User {
         }
 
         return this;
+    }
+
+    public void hashPassword(UnaryOperator<String> hashFunction) {
+
+        password = hashFunction.apply(password);
     }
 }

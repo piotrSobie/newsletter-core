@@ -16,23 +16,19 @@ import com.example.newslettercore.domain.user.value.UserPasswordValue;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final PasswordEncoder passwordEncoder;
     private final UserService userService;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
     public AuthResponse register(UserCreateDTO userCreateDTO) {
 
-        userService.validatePassword(userCreateDTO.getPassword());
-        String encodedPassword = passwordEncoder.encode(userCreateDTO.getPassword());
-        User createdUser = userService.createUser(new UserNameValue(userCreateDTO.getName()), new UserPasswordValue(encodedPassword),
+        User createdUser = userService.createUser(new UserNameValue(userCreateDTO.getName()), new UserPasswordValue(userCreateDTO.getPassword()),
                 new UserEmailValue(userCreateDTO.getEmail()), userCreateDTO.getRole());
 
         String jwtToken = generateToken(createdUser);

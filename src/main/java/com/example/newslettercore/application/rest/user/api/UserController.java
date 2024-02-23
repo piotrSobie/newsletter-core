@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,21 +30,17 @@ public class UserController {
     public static final String USER_ENDPOINT = "/user";
 
     private final UserService userService;
-    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserController(UserService userService, PasswordEncoder passwordEncoder) {
+    public UserController(UserService userService) {
 
         this.userService = userService;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @PatchMapping(path = USER_ENDPOINT + "/{userId}")
     public ResponseEntity<UserResponse> updateUser(@Nonnull @PathVariable("userId") String userId, @RequestBody @Valid UserUpdateDTO userUpdateDTO) {
 
-        userService.validatePassword(userUpdateDTO.getPassword());
-        String encodedPassword = passwordEncoder.encode(userUpdateDTO.getPassword());
-        User updatedUser = userService.updateUser(userId, new UserNameValue(userUpdateDTO.getName()), new UserPasswordValue(encodedPassword),
+        User updatedUser = userService.updateUser(userId, new UserNameValue(userUpdateDTO.getName()), new UserPasswordValue(userUpdateDTO.getPassword()),
                 new UserEmailValue(userUpdateDTO.getEmail()));
         UserResponse responseUser = RestUserMapper.getMapper.userToUserResponse(updatedUser);
         return new ResponseEntity<>(responseUser, HttpStatus.OK);
