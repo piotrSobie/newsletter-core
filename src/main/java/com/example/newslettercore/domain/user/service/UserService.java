@@ -23,21 +23,17 @@ public class UserService {
     public User createUser(UserNameValue name, UserPasswordValue password, UserEmailValue email, Role role) {
 
         User userToCreate = new User(name.getValue(), password.getValue(), email.getValue(), role);
-        return saveUser(userToCreate);
-    }
-
-    private User saveUser(User user) {
-
-        user.hashPassword(passwordEncipher::encodePassword);
-        return userRepository.save(user);
+        userToCreate.hashPassword(passwordEncipher::encodePassword);
+        return userRepository.save(userToCreate);
     }
 
     public User updateUser(String userId, UserNameValue name, UserPasswordValue password, UserEmailValue email) {
 
         User foundUser = userRepository.findById(userId)
                 .orElseThrow(() -> new NewsletterCoreObjectNotFoundException(User.class.getSimpleName(), userId));
-        User updatedUser = foundUser.updateUser(name.getValue(), password.getValue(), email.getValue());
-        return saveUser(updatedUser);
+        User updatedUser = foundUser.updateNotEncodedUserData(name.getValue(), email.getValue());
+        updatedUser = updatedUser.updatePassword(password.getValue(), passwordEncipher::encodePassword);
+        return userRepository.save(updatedUser);
     }
 
     public Optional<User> findByEmail(String email) {

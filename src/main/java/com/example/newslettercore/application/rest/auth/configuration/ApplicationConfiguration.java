@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -34,10 +35,10 @@ public class ApplicationConfiguration {
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider() {
+    @DependsOn("userDetailsService")
+    public AuthenticationProvider authenticationProvider(UserDetailsService userDetailsService) {
 
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        UserDetailsService userDetailsService = applicationContext.getBean(UserDetailsService.class);
         authProvider.setUserDetailsService(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;

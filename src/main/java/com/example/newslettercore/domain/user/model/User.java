@@ -82,16 +82,11 @@ public class User {
         }
     }
 
-    public User updateUser(String name, String password, String email) {
+    public User updateNotEncodedUserData(String name, String email) {
 
         if (Strings.isNotBlank(name)) {
             validateName(name);
             this.name = name;
-        }
-
-        if (Strings.isNotBlank(password)) {
-            validatePassword(password);
-            this.password = password;
         }
 
         if (Strings.isNotBlank(email)) {
@@ -99,6 +94,16 @@ public class User {
             this.email = email;
         }
 
+        return this;
+    }
+
+    public User updatePassword(String newPassword, UnaryOperator<String> hashFunction) {
+
+        if (Strings.isBlank(newPassword)) {
+            return this;
+        }
+
+        password = hashFunction.apply(newPassword);
         return this;
     }
 
