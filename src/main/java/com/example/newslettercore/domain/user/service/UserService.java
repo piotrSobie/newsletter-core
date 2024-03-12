@@ -1,27 +1,29 @@
 package com.example.newslettercore.domain.user.service;
 
-import com.example.newslettercore.domain.exception.CantLoginException;
 import com.example.newslettercore.domain.exception.NewsletterCoreObjectNotFoundException;
+import com.example.newslettercore.domain.port.PasswordEncipher;
+import com.example.newslettercore.domain.user.model.Role;
 import com.example.newslettercore.domain.user.model.User;
 import com.example.newslettercore.domain.user.repository.UserRepository;
 import com.example.newslettercore.domain.user.value.UserEmailValue;
 import com.example.newslettercore.domain.user.value.UserNameValue;
 import com.example.newslettercore.domain.user.value.UserPasswordValue;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncipher passwordEncipher;
 
-    public UserService(UserRepository userRepository) {
+    public User createUser(UserNameValue name, UserPasswordValue password, UserEmailValue email, Role role) {
 
-        this.userRepository = userRepository;
-    }
-
-    public User createUser(UserNameValue name, UserPasswordValue password, UserEmailValue email) {
-
-        User userToCreate = new User(name.getValue(), password.getValue(), email.getValue());
+        User userToCreate = new User(name.getValue(), password.getValue(), email.getValue(), role);
+        userToCreate.hashPassword(passwordEncipher::encodePassword);
         return userRepository.save(userToCreate);
     }
 
@@ -29,14 +31,13 @@ public class UserService {
 
         User foundUser = userRepository.findById(userId)
                 .orElseThrow(() -> new NewsletterCoreObjectNotFoundException(User.class.getSimpleName(), userId));
-        User updatedUser = foundUser.updateUser(name.getValue(), password.getValue(), email.getValue());
+        User updatedUser = foundUser.updateNotEncodedUserData(name.getValue(), email.getValue());
+        updatedUser = updatedUser.updatePassword(password.getValue(), passwordEncipher::encodePassword);
         return userRepository.save(updatedUser);
     }
 
-    public User loginUser(UserEmailValue email, UserPasswordValue givenPassword) {
+    public Optional<User> findByEmail(String email) {
 
-        User foundUser = userRepository.findByEmail(email.getValue())
-                .orElseThrow(CantLoginException::new);
-        return foundUser.loginUser(givenPassword.getValue());
+        return userRepository.findByEmail(email);
     }
 }
