@@ -11,3 +11,17 @@ services:
       POSTGRES_DB: default_database
     volumes:
       - ./db-data/:/var/lib/postgresql/data/
+
+  mentoring-kafka-zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+      - "2181:2181"
+
+  mentoring-kafka:
+    image: wurstmeister/kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: 127.0.0.1
+      KAFKA_ZOOKEEPER_CONNECT: mentoring-kafka-zookeeper:2181
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'false'
