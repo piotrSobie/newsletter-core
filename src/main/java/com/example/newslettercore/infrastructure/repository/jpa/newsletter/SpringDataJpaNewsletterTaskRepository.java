@@ -5,11 +5,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.Collection;
 
 @Repository
 public interface SpringDataJpaNewsletterTaskRepository extends JpaRepository<NewsletterTaskEntity, String> {
 
-    Optional<NewsletterTaskEntity> findByNewsletterTaskStatusAndNextTriggerIsLessThanEqual(NewsletterTaskStatus newsletterTaskStatus, LocalDateTime timeBefore);
-
+    Collection<NewsletterTaskEntity> findAllByNewsletterTaskStatusAndNextTriggerIsLessThanEqual(NewsletterTaskStatus newsletterTaskStatus, LocalDateTime timeBefore);
 }

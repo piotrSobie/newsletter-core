@@ -1,4 +1,4 @@
-package com.example.newslettercore.application.rest.adapter;
+package com.example.newslettercore.application.adapter;
 
 import com.example.newslettercore.domain.port.PasswordEncipher;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

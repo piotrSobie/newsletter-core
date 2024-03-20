@@ -26,5 +26,5 @@ public interface NewsletterRepository {
 
     NewsletterTask saveNewsletterTask(NewsletterTask newsletterTask);
 
-    Optional<NewsletterTask> findNewsletterTaskInStatusAndPastTriggerTime(NewsletterTaskStatus status);
+    Collection<NewsletterTask> findAllNewsletterTaskInStatusAndPastTriggerTime(NewsletterTaskStatus status);
 }

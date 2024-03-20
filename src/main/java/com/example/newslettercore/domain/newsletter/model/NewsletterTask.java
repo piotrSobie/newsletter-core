@@ -18,30 +18,39 @@ public class NewsletterTask {
 
     private Long version;
 
-    public NewsletterTask(String newsletterId, LocalDateTime nextTrigger, NewsletterTaskStatus newsletterTaskStatus) {
+    public NewsletterTask(String newsletterId, NewsletterTaskStatus newsletterTaskStatus, String cronSendingFrequency) {
+
+        validateNewsletterId(newsletterId);
+        validateNewsletterTaskStatus(newsletterTaskStatus);
+
+        this.newsletterId = newsletterId;
+        this.newsletterTaskStatus = newsletterTaskStatus;
+        updateNextTrigger(cronSendingFrequency);
+    }
+
+    public NewsletterTask(String id, String newsletterId, LocalDateTime nextTrigger, NewsletterTaskStatus newsletterTaskStatus, Long version) {
 
         validateData(newsletterId, nextTrigger, newsletterTaskStatus);
 
         this.newsletterId = newsletterId;
         this.nextTrigger = nextTrigger;
         this.newsletterTaskStatus = newsletterTaskStatus;
-    }
-
-    public NewsletterTask(String id, String newsletterId, LocalDateTime nextTrigger, NewsletterTaskStatus newsletterTaskStatus, Long version) {
-
-        this(newsletterId, nextTrigger, newsletterTaskStatus);
         this.id = id;
         this.version = version;
     }
 
     private void validateData(String newsletterId, LocalDateTime nextTrigger, NewsletterTaskStatus newsletterTaskStatus) {
 
+        validateNewsletterId(newsletterId);
+        validateNextTrigger(nextTrigger);
+        validateNewsletterTaskStatus(newsletterTaskStatus);
+    }
+
+    private void validateNewsletterId(String newsletterId) {
+
         if (null == newsletterId) {
             throw new IllegalArgumentException("NewsletterId can't be null");
         }
-
-        validateNextTrigger(nextTrigger);
-        validateNewsletterTaskStatus(newsletterTaskStatus);
     }
 
     private void validateNewsletterTaskStatus(NewsletterTaskStatus status) {

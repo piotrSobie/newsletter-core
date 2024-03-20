@@ -4,6 +4,10 @@ import com.example.newslettercore.domain.newsletter.model.NewsletterTask;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
+import java.util.Collection;
+
+import static java.util.stream.Collectors.toList;
+
 @Mapper
 public interface JpaNewsletterTaskMapper {
 
@@ -15,5 +19,12 @@ public interface JpaNewsletterTaskMapper {
 
         return new NewsletterTask(newsletterTaskEntity.getId(), newsletterTaskEntity.getNewsletterId(), newsletterTaskEntity.getNextTrigger(),
                 newsletterTaskEntity.getNewsletterTaskStatus(), newsletterTaskEntity.getVersion());
+    }
+
+    default Collection<NewsletterTask> newsletterTaskEntitiesToNewsletterTasks(Collection<NewsletterTaskEntity> newsletterTaskEntities) {
+
+        return newsletterTaskEntities.stream() //
+                .map(this::newsletterTaskEntityToNewsletterTask) //
+                .collect(toList());
     }
 }

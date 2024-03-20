@@ -91,10 +91,10 @@ public class JpaNewsletterRepository implements NewsletterRepository {
     }
 
     @Override
-    public Optional<NewsletterTask> findNewsletterTaskInStatusAndPastTriggerTime(NewsletterTaskStatus status) {
+    public Collection<NewsletterTask> findAllNewsletterTaskInStatusAndPastTriggerTime(NewsletterTaskStatus status) {
 
-        Optional<NewsletterTaskEntity> optionalNewsletterTaskEntity = newsletterTaskRepository.findByNewsletterTaskStatusAndNextTriggerIsLessThanEqual(status,
+        Collection<NewsletterTaskEntity> newsletterEntities = newsletterTaskRepository.findAllByNewsletterTaskStatusAndNextTriggerIsLessThanEqual(status,
                 LocalDateTime.now());
-        return optionalNewsletterTaskEntity.map(JpaNewsletterTaskMapper.getMapper::newsletterTaskEntityToNewsletterTask);
+        return JpaNewsletterTaskMapper.getMapper.newsletterTaskEntitiesToNewsletterTasks(newsletterEntities);
     }
 }
