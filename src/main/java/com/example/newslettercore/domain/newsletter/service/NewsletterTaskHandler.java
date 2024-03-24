@@ -6,6 +6,7 @@ import com.example.newslettercore.domain.newsletter.model.NewsletterTask;
 import com.example.newslettercore.domain.newsletter.model.NewsletterTaskData;
 import com.example.newslettercore.domain.newsletter.model.NewsletterTaskStatus;
 import com.example.newslettercore.domain.newsletter.repository.NewsletterRepository;
+import com.example.newslettercore.domain.subscription.repository.SubscriptionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,14 +17,14 @@ import java.util.List;
 public class NewsletterTaskHandler implements Runnable {
 
     private final NewsletterRepository newsletterRepository;
+    private final SubscriptionRepository subscriptionRepository;
     private final NewsletterNotifier newsletterNotifier;
     private final NewsletterTask newsletterTask;
 
     @Override
     public void run() {
 
-        // todo get subscriptionId list using newsletterId
-        List<String> subscriptionIds = List.of("sub1", "sub2");
+        List<String> subscriptionIds = subscriptionRepository.findSubscriptionIdsByNewsletterId(newsletterTask.getNewsletterId());
         NewsletterTaskData newsletterTaskData = new NewsletterTaskData(newsletterTask.getNewsletterId(), subscriptionIds);
         newsletterNotifier.notify(newsletterTaskData);
         Newsletter newsletter = newsletterRepository.findNewsletterById(newsletterTask.getNewsletterId()).orElseThrow();
