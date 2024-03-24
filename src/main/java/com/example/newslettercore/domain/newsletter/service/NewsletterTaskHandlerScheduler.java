@@ -4,6 +4,7 @@ import com.example.newslettercore.domain.message.broker.NewsletterNotifier;
 import com.example.newslettercore.domain.newsletter.model.NewsletterTask;
 import com.example.newslettercore.domain.newsletter.model.NewsletterTaskStatus;
 import com.example.newslettercore.domain.newsletter.repository.NewsletterRepository;
+import com.example.newslettercore.domain.subscription.repository.SubscriptionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
@@ -23,6 +24,7 @@ import java.util.concurrent.Executors;
 public class NewsletterTaskHandlerScheduler {
 
     private final NewsletterRepository newsletterRepository;
+    private final SubscriptionRepository subscriptionRepository;
     private final NewsletterNotifier newsletterNotifier;
 
     @Value("${newsletter.task.service.thread.pool}")
@@ -44,7 +46,8 @@ public class NewsletterTaskHandlerScheduler {
 
         ExecutorService executorService = Executors.newFixedThreadPool(newsletterTaskServiceThreadPool);
         reservedTasks.forEach(reservedTask -> {
-            NewsletterTaskHandler newsletterTaskHandler = new NewsletterTaskHandler(newsletterRepository, newsletterNotifier, reservedTask);
+            NewsletterTaskHandler newsletterTaskHandler = new NewsletterTaskHandler(newsletterRepository, subscriptionRepository, newsletterNotifier,
+                    reservedTask);
             executorService.submit(newsletterTaskHandler);
         });
     }
