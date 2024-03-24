@@ -2,6 +2,8 @@ package com.example.newslettercore.domain.newsletter.service;
 
 import com.example.newslettercore.domain.exception.NewsletterCoreObjectNotFoundException;
 import com.example.newslettercore.domain.newsletter.model.Newsletter;
+import com.example.newslettercore.domain.newsletter.model.NewsletterTask;
+import com.example.newslettercore.domain.newsletter.model.NewsletterTaskStatus;
 import com.example.newslettercore.domain.newsletter.model.Template;
 import com.example.newslettercore.domain.newsletter.repository.NewsletterRepository;
 import org.springframework.stereotype.Service;
@@ -23,7 +25,15 @@ public class NewsletterService {
     public Newsletter createNewsletter(Set<String> tags, String cronSendingFrequency) {
 
         Newsletter newsletterToCreate = new Newsletter(tags, cronSendingFrequency);
-        return newsletterRepository.save(newsletterToCreate);
+        Newsletter savedNewsletter = newsletterRepository.save(newsletterToCreate);
+        saveNewsletterTask(savedNewsletter);
+        return savedNewsletter;
+    }
+
+    private void saveNewsletterTask(Newsletter newsletter) {
+
+        NewsletterTask newsletterTask = new NewsletterTask(newsletter.getId(), NewsletterTaskStatus.NOT_SENT, newsletter.getCronSendingFrequency());
+        newsletterRepository.saveNewsletterTask(newsletterTask);
     }
 
     public Newsletter getNewsletterById(String newsletterId) {

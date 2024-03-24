@@ -1,11 +1,15 @@
 package com.example.newslettercore.infrastructure.repository.jpa.newsletter;
 
 import com.example.newslettercore.domain.newsletter.model.Newsletter;
+import com.example.newslettercore.domain.newsletter.model.NewsletterTask;
+import com.example.newslettercore.domain.newsletter.model.NewsletterTaskStatus;
 import com.example.newslettercore.domain.newsletter.model.Template;
 import com.example.newslettercore.domain.newsletter.repository.NewsletterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -14,12 +18,14 @@ public class JpaNewsletterRepository implements NewsletterRepository {
 
     private final SpringDataJpaNewsletterRepository newsletterRepository;
     private final SpringDataJpaTemplateRepository templateRepository;
+    private final SpringDataJpaNewsletterTaskRepository newsletterTaskRepository;
 
     @Autowired
-    public JpaNewsletterRepository(SpringDataJpaNewsletterRepository newsletterRepository, SpringDataJpaTemplateRepository templateRepository) {
+    public JpaNewsletterRepository(SpringDataJpaNewsletterRepository newsletterRepository, SpringDataJpaTemplateRepository templateRepository, SpringDataJpaNewsletterTaskRepository newsletterTaskRepository) {
 
         this.newsletterRepository = newsletterRepository;
         this.templateRepository = templateRepository;
+        this.newsletterTaskRepository = newsletterTaskRepository;
     }
 
     @Override
@@ -31,6 +37,7 @@ public class JpaNewsletterRepository implements NewsletterRepository {
     }
 
     @Override
+    @Transactional
     public Optional<Newsletter> findNewsletterById(String newsletterId) {
 
         Optional<NewsletterEntity> newsletterOptional = newsletterRepository.findById(newsletterId);
@@ -73,5 +80,21 @@ public class JpaNewsletterRepository implements NewsletterRepository {
     public void deleteTemplateById(String templateId) {
 
         templateRepository.deleteById(templateId);
+    }
+
+    @Override
+    public NewsletterTask saveNewsletterTask(NewsletterTask newsletterTask) {
+
+        NewsletterTaskEntity newsletterTaskEntity = JpaNewsletterTaskMapper.getMapper.newsletterTaskToNewsletterTaskEntity(newsletterTask);
+        NewsletterTaskEntity savedNewsletterTaskEntity = newsletterTaskRepository.saveAndFlush(newsletterTaskEntity);
+        return JpaNewsletterTaskMapper.getMapper.newsletterTaskEntityToNewsletterTask(savedNewsletterTaskEntity);
+    }
+
+    @Override
+    public Collection<NewsletterTask> findAllNewsletterTaskInStatusAndPastTriggerTime(NewsletterTaskStatus status) {
+
+        Collection<NewsletterTaskEntity> newsletterEntities = newsletterTaskRepository.findAllByNewsletterTaskStatusAndNextTriggerIsLessThanEqual(status,
+                LocalDateTime.now());
+        return JpaNewsletterTaskMapper.getMapper.newsletterTaskEntitiesToNewsletterTasks(newsletterEntities);
     }
 }

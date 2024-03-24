@@ -1,6 +1,8 @@
 package com.example.newslettercore.domain.newsletter.repository;
 
 import com.example.newslettercore.domain.newsletter.model.Newsletter;
+import com.example.newslettercore.domain.newsletter.model.NewsletterTask;
+import com.example.newslettercore.domain.newsletter.model.NewsletterTaskStatus;
 import com.example.newslettercore.domain.newsletter.model.Template;
 
 import java.util.Collection;
@@ -21,4 +23,8 @@ public interface NewsletterRepository {
     Collection<Template> findTemplatesByParams(String newsletterId, String channel);
 
     void deleteTemplateById(String templateId);
+
+    NewsletterTask saveNewsletterTask(NewsletterTask newsletterTask);
+
+    Collection<NewsletterTask> findAllNewsletterTaskInStatusAndPastTriggerTime(NewsletterTaskStatus status);
 }
