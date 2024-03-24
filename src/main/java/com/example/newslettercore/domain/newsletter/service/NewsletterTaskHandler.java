@@ -22,7 +22,9 @@ public class NewsletterTaskHandler implements Runnable {
     @Override
     public void run() {
 
-        NewsletterTaskData newsletterTaskData = new NewsletterTaskData(newsletterTask.getNewsletterId(), List.of("email1", "email2"));
+        // todo get subscriptionId list using newsletterId
+        List<String> subscriptionIds = List.of("sub1", "sub2");
+        NewsletterTaskData newsletterTaskData = new NewsletterTaskData(newsletterTask.getNewsletterId(), subscriptionIds);
         newsletterNotifier.notify(newsletterTaskData);
         Newsletter newsletter = newsletterRepository.findNewsletterById(newsletterTask.getNewsletterId()).orElseThrow();
         setNewsletterTaskForNextTrigger(newsletterTask, newsletter.getCronSendingFrequency());

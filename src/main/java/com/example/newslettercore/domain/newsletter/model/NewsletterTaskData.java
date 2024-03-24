@@ -13,5 +13,5 @@ public class NewsletterTaskData {
 
     private String newsletterId;
 
-    private List<String> emails;
+    private List<String> subscriptionIds;
 }
